@@ -19,9 +19,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.13</version>
-      <scope>system</scope>
-      <!-- ${basedir} 项目根目录 -->
-      <systemPath>${basedir}/lib/slf4j-api-1.7.13.jar</systemPath>
     </dependency>
 
     <!-- 其他jar包引用开始 -->
@@ -38,49 +35,25 @@
     <finalName>App</finalName>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
+        <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
           <archive>
             <manifest>
-              <!-- 指定Main方法入口的class -->
               <mainClass>com.birdben.App</mainClass>
-              <!-- 在jar包的MANIFEST.MF文件中生成Class-Path属性 -->
-              <addClasspath>true</addClasspath>
-              <!-- Class-Path 前缀 -->
-              <classpathPrefix>lib/</classpathPrefix>
             </manifest>
-            <!-- 把本地的第三方jar包添加到MANIFEST.MF文件中,可以解压打包后的jar包查看MANIFEST.MF文件 -->
-            <!--
-            Class-Path: 指定当前jar包执行所依赖的classpath,包括本地的第三方jar包和maven引入的jar包
-            Class-Path: lib/slf4j-api-1.7.13.jar lib/junit-3.8.1.jar
-            Main-Class: 指定当前jar包的入口class
-            Main-Class: com.birdben.App
-            -->
-            <manifestEntries>
-              <Class-Path>lib/slf4j-api-1.7.13.jar</Class-Path>
-            </manifestEntries>
           </archive>
         </configuration>
-      </plugin>
-      <!-- 拷贝依赖的jar包到lib目录 -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy</id>
+            <id>make-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>assembly</goal>
             </goals>
-            <configuration>
-              <!-- ${project.build.directory} 构建目录，缺省为target -->
-              <outputDirectory>
-                ${project.build.directory}/lib
-              </outputDirectory>
-            </configuration>
           </execution>
         </executions>
       </plugin>
