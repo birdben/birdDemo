@@ -12,13 +12,15 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- 定义配置文件目录 -->
+    <profiles.dir>src/main/resources</profiles.dir>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.13</version>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.21</version>
     </dependency>
 
     <!-- 其他jar包引用开始 -->
@@ -31,8 +33,41 @@
 
   </dependencies>
 
+  <!-- 定义不同环境的配置文件目录 -->
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <profile.dir>${profiles.dir}/dev</profile.dir>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <profile.dir>${profiles.dir}/test</profile.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>product</id>
+      <properties>
+        <profile.dir>${profiles.dir}/product</profile.dir>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <finalName>App</finalName>
+    <resources>
+      <resource>
+        <!-- 使用前面定义的${profile.dir}参数指定的配置文件所在的目录 -->
+        <directory>${profile.dir}</directory>
+        <filtering>true</filtering>
+        <targetPath>${project.build.directory}/resources</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -45,6 +80,10 @@
             <manifest>
               <mainClass>com.birdben.App</mainClass>
             </manifest>
+            <!-- 给清单文件添加键值对(配置文件外置) -->
+            <manifestEntries>
+              <Class-Path>resources/</Class-Path>
+            </manifestEntries>
           </archive>
         </configuration>
         <executions>
